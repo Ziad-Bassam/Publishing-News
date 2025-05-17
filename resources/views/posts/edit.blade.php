@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
     @section('title')
+        {{-- Edit page --}}
         Edit Post
     @endsection
 
