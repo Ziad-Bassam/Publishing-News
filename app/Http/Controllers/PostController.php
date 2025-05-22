@@ -7,6 +7,7 @@ use App\Models\User;
 use GuzzleHttp\Promise\Create;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use App\Http\Requests\PostRequest;
 
 use function PHPUnit\Framework\isNull;
 
@@ -15,7 +16,7 @@ class PostController extends Controller
     public function index()
     {
 
-        // 1- create database 
+        // 1- create database
         // 2- create table (id , title (varchar) , description (text) , created_at , updated_at)
 
         // Query = selcte * from posts
@@ -32,23 +33,23 @@ class PostController extends Controller
     {
 
         // Query = selcte * from posts where id = $post_id
-        // We Have 3 ways to do this Query 
+        // We Have 3 ways to do this Query
 
-        // first way 
+        // first way
         $SinglePostFromDB = post::findorfail($postId);
 
-        // Second way 
+        // Second way
 
-        //$SinglePostFromDB = post::where('id' , $postId)->first(); //==single result 
+        //$SinglePostFromDB = post::where('id' , $postId)->first(); //==single result
 
 
         //third way
 
-        // $SinglePostFromDB = post::where('id' , $postId)->get(); // == collection object 
+        // $SinglePostFromDB = post::where('id' , $postId)->get(); // == collection object
 
 
         // post::where('title', 'php')->frist(); //select * from posts where title = php limit 1
-        // post::where('title', 'php')->get(); //select * from posts where title = php 
+        // post::where('title', 'php')->get(); //select * from posts where title = php
 
 
 
@@ -58,7 +59,7 @@ class PostController extends Controller
 
 
 
-        // first way 
+        // first way
 
         // if (is_null($SinglePostFromDB)) {
         //     return to_route('posts.index');
@@ -80,8 +81,6 @@ class PostController extends Controller
 
 
 
-
-
     public function create()
     {
 
@@ -95,51 +94,25 @@ class PostController extends Controller
 
 
 
-
-
-
-
-
-
-
-
-
-    public function store()
+    public function store(PostRequest $request)
     {
 
         // code validation
 
-        request()->validate([
-            'title' => ['required', 'min:3'],
-            'description' => ['required', 'min:10'],
-            'post_creator' => ['required', 'exists:users,id']
-        ]);
-
-
-
         // 1- get the user data
-        //$data = $_POST;  this isn't framework way 
-        // 1- 
+        //$data = $_POST;  this isn't framework way
+        // 1-
         $data = request()->all();
-
-
         $title = request()->title;
         $description = request()->description;
         $post_creator = request()->post_creator;
-
-
         //2-store the user data in database
-
         $post = new post;
-
         $post->title = $title;
         $post->description = $description;
         $post->user_id = $post_creator;
         $post->save(); // insert into posts (title,description)
         //there second way to insert data in database (search)
-
-
-
         // 3- redirection to posts.index
         return to_route('posts.index');
     }
@@ -159,27 +132,11 @@ class PostController extends Controller
 
 
 
-    public function update($postId)
+    public function update(PostRequest $request , $postId)
     {
-
-
-
-
-        request()->validate([
-            'title' => ['required', 'min:3'],
-            'description' => ['required', 'min:10'],
-            'post_creator' => ['required', 'exists:users,id']
-        ]);
-
-
-
-
-
         $title = request()->title;
         $description = request()->description;
         $post_creator = request()->post_creator;
-
-
         // insert into posts
         $SinglePostFromDB = post::find($postId);
         $SinglePostFromDB->update([

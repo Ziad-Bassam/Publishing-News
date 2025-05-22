@@ -20,7 +20,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// route name help to (DRY) 
+// route name help to (DRY)
 
 Route::get('/posts', [PostController::class, 'index'])->name(name: 'posts.index');
 
